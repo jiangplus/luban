@@ -3,6 +3,7 @@ module github.com/jiangplus/luban
 go 1.15
 
 require (
+	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/golang/protobuf v1.4.3
 	github.com/magiconair/properties v1.8.4 // indirect
@@ -18,4 +19,6 @@ require (
 	google.golang.org/grpc v1.32.0
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/ini.v1 v1.62.0 // indirect
+	gopkg.in/yaml.v1 v1.0.0-20140924161607-9f9df34309c0 // indirect
+	gopkg.in/yaml.v2 v2.4.0
 )

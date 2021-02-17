@@ -7,15 +7,16 @@ option java_outer_classname = "LubanProto";
 
 package rpc;
 
-service Greeter {
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
-  rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
+service Luban {
+  rpc Submit (SubmitRequest) returns (SubmitReply) {}
 }
 
-message HelloRequest {
-  string name = 1;
+message SubmitRequest {
+  string data = 1;
+  string format = 2;
+  string work_dir = 3;
 }
 
-message HelloReply {
-  string message = 1;
+message SubmitReply {
+  string data = 1;
 }

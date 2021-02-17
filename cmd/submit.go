@@ -3,8 +3,8 @@ package cmd
 import (
     "fmt"
 	"context"
+	"io/ioutil"
 	"log"
-	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -18,8 +18,7 @@ func init() {
 }
 
 const (
-	address     = "localhost:50051"
-	defaultName = "world"
+	address = "localhost:50051"
 )
 
 
@@ -29,31 +28,36 @@ var submitCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("luban job")
 
-
 		conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 		if err != nil {
 			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
-		c := pb.NewGreeterClient(conn)
+		c := pb.NewLubanClient(conn)
 
 		// Contact the server and print out its response.
-		name := defaultName
-		if len(os.Args) > 1 {
-			name = os.Args[1]
+
+		fmt.Println(args)
+		filename := ""
+		if len(args) < 1 {
+			log.Fatalln("filename is needed")
 		}
+		filename = args[0]
+
+		data, err := ioutil.ReadFile(filename)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		if len(data) == 0 {
+			log.Fatalln("input file is empty")
+		}
+
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 		defer cancel()
-		r, err := c.SayHello(ctx, &pb.HelloRequest{Name: name})
+		r, err := c.Submit(ctx, &pb.SubmitRequest{Data: string(data)})
 		if err != nil {
-			log.Fatalf("could not greet: %v", err)
+			log.Fatalf("could not submit job: %v", err)
 		}
-		log.Printf("Greeting: %s", r.GetMessage())
-
-		r, err = c.SayHelloAgain(ctx, &pb.HelloRequest{Name: name})
-		if err != nil {
-			log.Fatalf("could not greet: %v", err)
-		}
-		log.Printf("Greeting: %s", r.GetMessage())
+		log.Printf("Data: %s", r.GetData())
 	},
 }
